@@ -29,6 +29,9 @@
 
 namespace Upp {
 
+static void GLAPIENTRY MessageCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ){
+  fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),type, severity, message );
+}
 
 
 class GLCtrl_glad : public Ctrl {
@@ -107,6 +110,7 @@ public:
 	static void SetMSAA(int n = 4)                { numberOfSamples = n; }
 	
 	static void CreateContext();
+		
 	
 	static Size CurrentViewport()                 { return current_viewport; }
 	static void SetCurrentViewport(); // intended to restore viewport after changing it in e.g. TextureDraw

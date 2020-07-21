@@ -24,6 +24,7 @@ void GLCtrl_glad::DoGLPaint()
 
 void GLCtrl_glad::Init()
 {
+	
 	CreateContext();//IMPORTANT
 	Transparent();
 #ifdef PLATFORM_WIN32
@@ -31,7 +32,7 @@ void GLCtrl_glad::Init()
 	Add(pane.SizePos());
 #endif
 	restore_gl_viewport__ = SetCurrentViewport;
-		
+
 }
 
 Image GLCtrl_glad::MouseEvent(int event, Point p, int zdelta, dword keyflags)

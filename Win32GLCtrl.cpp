@@ -7,15 +7,19 @@ namespace Upp {
 #pragma comment( lib, "opengl32.lib" )	// Search For OpenGL32.lib While Linking
 #pragma comment( lib, "glu32.lib" )		// Search For GLu32.lib While Linking
 
+
 static HGLRC                 s_openGLContext; // we only have single OpenGL context for all windows
 static PIXELFORMATDESCRIPTOR s_pfd;
 static int                   s_pixelFormatID;
+static HWND hWND;
+
+
 
 void MakeWGLContext(int depthBits, int stencilBits, int samples)
 {
 	ONCELOCK {
 		for(int pass = 0; pass < 2; pass++) {
-			HWND hWND = CreateWindow("UPP-CLASS-A", "Fake Window",
+			hWND = CreateWindow("UPP-CLASS-A", "Fake Window",
 			                         WS_CAPTION|WS_SYSMENU|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
 			                         0, 0, 1, 1, NULL, NULL,
 			                         NULL, NULL);
@@ -68,24 +72,22 @@ void MakeWGLContext(int depthBits, int stencilBits, int samples)
 			s_openGLContext = wglCreateContext(hDC);
 			
 			bool enhanced_mode=false;
-			
 			if(pass == 0) {
 				HGLRC hRC = wglCreateContext(hDC);
 				wglMakeCurrent(hDC, s_openGLContext);
-				Cout() << gladLoadGL() << EOL;
 				if(!gladLoadGL()){
 					RLOG("Failed to load all OpenGL functions");
 					exit(-1);
 				}
-				Cout() << gladLoadWGL(hDC) << EOL;
 				if(!gladLoadWGL(hDC)){
 					RLOG("Failed to load Wiggle API");
 					exit(-1);
 				}
-				if ("GLAD_GL_VERSION_2_1") enhanced_mode=true;
+				if ("GLAD_GL_VERSION_4_6") enhanced_mode=true;
 				wglMakeCurrent(NULL, NULL);
 			}
-
+			dword id = GetCurrentThreadId();
+			
 		    ReleaseDC(hWND, hDC);
 		    DestroyWindow(hWND);
 		    
@@ -113,15 +115,19 @@ void GLCtrl_glad::GLPane::State(int reason)
 	}
 }
 
+
+
 void GLCtrl_glad::GLPane::ExecuteGL(HDC hDC, Event<> paint, bool swap_buffers)
 {
-	wglMakeCurrent(hDC, s_openGLContext);
+	ONCELOCK{
+		wglMakeCurrent(hDC, s_openGLContext);
+	}
 	paint();
 	if(swap_buffers)
 		SwapBuffers(hDC);
 	else
 		glFlush();
-	wglMakeCurrent(NULL, NULL);
+	//wglMakeCurrent(NULL, NULL);
 }
 
 void GLCtrl_glad::GLPane::ExecuteGL(Event<> paint, bool swap_buffers)
