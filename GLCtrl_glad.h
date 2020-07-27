@@ -11,7 +11,7 @@
 #define Status  int
 #endif
 
-#include <plugin/glad/glad.h>
+#include <plugin/glad/Glad.h>
 
 #include <GL/gl.h>
 #include <GL/glu.h>

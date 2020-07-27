@@ -28,7 +28,7 @@ static Colormap     s_Colormap;
 static GLXContext   s_GLXContext;
 static ::XDisplay  *s_Display;
 
-void GLCtrl_glad_glad::Create()
+void GLCtrl_glad::Create()
 {
 	MemoryIgnoreLeaksBlock __;
 
@@ -125,9 +125,9 @@ void GLCtrl_glad::State(int reason)
 void GLCtrl_glad::ExecuteGL(Event<> paint, bool swap_buffers)
 {
 	MemoryIgnoreLeaksBlock __;
-
-	glXMakeCurrent(s_Display, win, s_GLXContext);
-
+	ONCELOCK{
+		glXMakeCurrent(s_Display, win, s_GLXContext);
+	}
 	ONCELOCK {
 		gladLoadGL();
 	}
@@ -139,7 +139,7 @@ void GLCtrl_glad::ExecuteGL(Event<> paint, bool swap_buffers)
 	else
 		glFlush();
 
-	glXMakeCurrent(s_Display, None, NULL);
+	//glXMakeCurrent(s_Display, None, NULL);
 }
 
 void GLCtrl_glad::Paint(Draw& w)

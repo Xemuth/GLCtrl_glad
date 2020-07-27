@@ -25,9 +25,10 @@ void GLCtrl_glad::DoGLPaint()
 void GLCtrl_glad::Init()
 {
 	
-	CreateContext();//IMPORTANT
+	
 	Transparent();
 #ifdef PLATFORM_WIN32
+	CreateContext();//IMPORTANT
 	pane.ctrl = this;
 	Add(pane.SizePos());
 #endif
