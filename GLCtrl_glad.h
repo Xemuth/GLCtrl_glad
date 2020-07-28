@@ -18,7 +18,7 @@
 
 #if defined(GUI_X11) || defined(GUI_GTK)
 
-#include <GL/glx.h>
+//#include <GL/glx.h>
 
 #undef  Status
 #undef  Picture
