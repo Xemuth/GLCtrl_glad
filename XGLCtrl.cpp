@@ -1,9 +1,10 @@
 #include "GLCtrl_glad.h"
 
 #ifdef PLATFORM_POSIX
+#include <plugin/glad/Glad.h>
 
-#include <GL/glx.h>
-#include <GL/gl.h>
+//#include <GL/glx.h>
+//#include <GL/gl.h>
 
 #define Time    XTime
 #define Font    XFont
@@ -52,8 +53,11 @@ void GLCtrl_glad::Create()
 	#else
 		s_Display = Xdisplay;
 	#endif
+		if(!gladLoadGLX(s_Display,DefaultScreen(s_Display))){
+			RLOG("Failed to load GLX API");
+			exit(-1);
+		}
 		int samples = numberOfSamples;
-
 		do {
 			Vector<int> attr;
 			attr << GLX_RGBA << GLX_DEPTH_SIZE << depthSize
@@ -71,7 +75,8 @@ void GLCtrl_glad::Create()
 			return;
 		s_Colormap = XCreateColormap(s_Display, RootWindow(s_Display, s_XVisualInfo->screen), s_XVisualInfo->visual, AllocNone);
 		s_GLXContext = glXCreateContext(s_Display, s_XVisualInfo, NULL, GL_TRUE);
-		printf("OpenGL %d.%d Loaded\n", GLVersion.major, GLVersion.minor);
+		
+		
 	}
 	
 	if(!s_GLXContext)
@@ -85,6 +90,12 @@ void GLCtrl_glad::Create()
 	win = XCreateWindow(s_Display, w, 0, 0, 1, 1, 0,
                         s_XVisualInfo->depth, InputOutput, s_XVisualInfo->visual,
                         CWBorderPixel|CWColormap|CWEventMask, &swa);
+    glXMakeCurrent(s_Display, win, s_GLXContext);
+    if(!gladLoadGL()){
+		RLOG("Error loading OpenGL");
+		exit(-1);
+    }
+    printf("OpenGL %d.%d Loaded\n", GLVersion.major, GLVersion.minor);
 	visible = false;
 	position = Null;
 }

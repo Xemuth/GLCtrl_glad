@@ -13,12 +13,12 @@
 
 #include <plugin/glad/Glad.h>
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #include <GL/glu.h>
 
 #if defined(GUI_X11) || defined(GUI_GTK)
 
-#include <GL/glx.h>
+//#include <GL/glx.h>
 
 #undef  Status
 #undef  Picture
