@@ -83,6 +83,7 @@ void MakeWGLContext(int depthBits, int stencilBits, int samples)
 					RLOG("Failed to load Wiggle API");
 					exit(-1);
 				}
+				printf("OpenGL %d.%d Loaded\n", GLVersion.major, GLVersion.minor);
 				if ("GLAD_GL_VERSION_4_6") enhanced_mode=true;
 				wglMakeCurrent(NULL, NULL);
 			}

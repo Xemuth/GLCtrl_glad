@@ -71,6 +71,7 @@ void GLCtrl_glad::Create()
 			return;
 		s_Colormap = XCreateColormap(s_Display, RootWindow(s_Display, s_XVisualInfo->screen), s_XVisualInfo->visual, AllocNone);
 		s_GLXContext = glXCreateContext(s_Display, s_XVisualInfo, NULL, GL_TRUE);
+		printf("OpenGL %d.%d Loaded\n", GLVersion.major, GLVersion.minor);
 	}
 	
 	if(!s_GLXContext)
