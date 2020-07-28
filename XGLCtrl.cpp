@@ -34,14 +34,17 @@ void GLCtrl_glad::Create()
 	MemoryIgnoreLeaksBlock __;
 
 	Ctrl *top = GetTopCtrl();
-	if(!top)
+	if(!top){
+		RLOG("Error, failled to retrieve top Ctrl");
 		return;
+	}
 
 #ifdef GUI_GTK
 	GdkWindow *gdk = top->gdk();
-	if(!gdk)
+	if(!gdk){
+		RLOG("Error, failled to retrieve gdk from top Ctrl");
 		return;
-
+	}
 	Window w = gdk_x11_window_get_xid(gdk);
 #else
 	Window w = top->GetWindow();
@@ -71,16 +74,18 @@ void GLCtrl_glad::Create()
 			s_XVisualInfo = glXChooseVisual(s_Display, DefaultScreen(s_Display), attr);
 		}
 		while(!s_XVisualInfo && samples > 0);
-		if(!s_XVisualInfo)
+		if(!s_XVisualInfo){
+			RLOG("Error, glXChooseVisual(...) have failled");
 			return;
+		}
 		s_Colormap = XCreateColormap(s_Display, RootWindow(s_Display, s_XVisualInfo->screen), s_XVisualInfo->visual, AllocNone);
 		s_GLXContext = glXCreateContext(s_Display, s_XVisualInfo, NULL, GL_TRUE);
-		
-		
 	}
 	
-	if(!s_GLXContext)
+	if(!s_GLXContext){
+		RLOG("Error, failled to create GLXContext using glXCreateContext(...)");
 		return;
+	}
 
 	XSetWindowAttributes swa;
 	swa.colormap = s_Colormap;
@@ -95,7 +100,11 @@ void GLCtrl_glad::Create()
 		RLOG("Error loading OpenGL");
 		exit(-1);
     }
-    printf("OpenGL %d.%d Loaded\n", GLVersion.major, GLVersion.minor);
+    RLOG(Upp::String("OpenGL ") + AsString(GLVersion.major) + Upp::String(".") + AsString(GLVersion.minor) + Upp::String(" used"));
+    if (!"GLAD_GL_VERSION_4_0"){
+		RLOG("OpenGL 4.0 or higher version is necessary !");
+		exit(-1);
+	}
 	visible = false;
 	position = Null;
 }
